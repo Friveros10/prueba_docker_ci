@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Crear tarea</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f8;
+            padding: 20px;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 6px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.05);
+            max-width: 400px;
+        }
+
+        label {
+            display: block;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        input[type="checkbox"] {
+            margin-left: 5px;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 10px 16px;
+            background-color: #007bff;
+            border: none;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .message {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 4px;
+        }
+
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        ul {
+            padding-left: 20px;
+        }
+
+        a {
+            display: inline-block;
+            margin-top: 20px;
+            text-decoration: none;
+            color: #007bff;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Crear nueva tarea</h1>
+
+    <form id="task-form">
+        <label for="title">Título:</label>
+        <input type="text" name="title" id="title" required>
+
+        <label>
+            <input type="checkbox" name="completed" id="completed" value="1">
+            Completada
+        </label>
+
+        <button type="submit">Guardar</button>
+    </form>
+
+    <div id="form-messages"></div>
+
+    <a href="/tasks">Volver</a>
+
+    <script>
+        const form = document.getElementById('task-form');
+        const messages = document.getElementById('form-messages');
+
+        form.addEventListener('submit', function (e) {
+            e.preventDefault(); // evita recarga
+
+            const formData = new FormData(form);
+
+            // Validar que el campo completed siempre esté presente, 1 o 0
+            if (!formData.has('completed')) {
+                formData.append('completed', 0);
+            }
+
+            fetch('/tasks/store', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(async response => {
+                const contentType = response.headers.get("content-type");
+                const isJSON = contentType && contentType.includes("application/json");
+
+                if (!response.ok) {
+                    const errorText = isJSON ? await response.json() : await response.text();
+                    throw errorText;
+                }
+
+                return isJSON ? response.json() : {};
+            })
+            .then(data => {
+                // Éxito
+                messages.innerHTML = `<div class="message success">Tarea guardada exitosamente.</div>`;
+                form.reset();
+
+                // Opcional: redirigir luego de crear
+                // setTimeout(() => window.location.href = '/tasks', 1500);
+            })
+            .catch(error => {
+                // Errores de validación
+                if (typeof error === 'object' && error.errors) {
+                    let errorsHtml = '<div class="message error"><ul>';
+                    Object.values(error.errors).forEach(err => {
+                        errorsHtml += `<li>${err}</li>`;
+                    });
+                    errorsHtml += '</ul></div>';
+                    messages.innerHTML = errorsHtml;
+                } else {
+                    // Error general
+                    messages.innerHTML = `<div class="message error">Ocurrió un error al guardar la tarea.</div>`;
+                    console.error(error);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
