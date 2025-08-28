@@ -18,7 +18,7 @@ $routes->set404Override();
 // where controller filters or CSRF protection are bypassed.
 // If you don't want to define all routes, please use the Auto Routing (Improved).
 // Set `$autoRoutesImproved` to true in `app/Config/Feature.php` and set the following to true.
-// $routes->setAutoRoute(false);
+$routes->setAutoRoute(false);
 
 /*
  * --------------------------------------------------------------------
@@ -29,16 +29,15 @@ $routes->get('/tasks', 'TaskController::index');
 $routes->get('/tasks/create', 'TaskController::create');
 $routes->post('/tasks/store', 'TaskController::store');
 $routes->get('/tasks/edit/(:num)', 'TaskController::edit/$1');
-$routes->post('/tasks/update/(:num)', 'TaskController::update/$1');
 $routes->get('/tasks/delete/(:num)', 'TaskController::deleteView/$1');
 $routes->get('/tasks/show/(:num)', 'TaskController::show/$1');
 
 //api
 
 $routes->post('api/tasks/delete/(:num)', 'TaskApiController::delete/$1');
+$routes->post('/tasks/update/(:num)', 'TaskController::update/$1');
 $routes->get('api/tasks', 'TaskApiController::getTasks');
-$routes->get('api//tasks/store', 'TaskApiController::storeTasks');
-$routes->get('api//tasks/delete/(:num)', 'TaskApiController::deleteTasks');
+$routes->post('api/tasks/store', 'TaskApiController::storeTasks');
 $routes->get('api/tasks/show/(:num)', 'TaskApiController::showTasks/$1');
 
 // We get a performance increase by specifying the default
