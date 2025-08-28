@@ -6,13 +6,11 @@ use CodeIgniter\Controller;
 
 class TaskController extends Controller
 {
-    // Muestra todas las tareas
     public function index()
     {
         return view('tasks/index');
     }
 
-    // Muestra el formulario para crear una nueva tarea
     public function create()
     {
         return view('tasks/create');
@@ -35,12 +33,10 @@ class TaskController extends Controller
         return view('tasks/show', ['id' => $id]);
     }
 
-    // Almacena una nueva tarea
     public function store()
     {
         $taskModel = new TaskModel();
 
-        // Validación
         if (! $this->validate([
             'title'     => 'required|min_length[3]|max_length[255]',
             'completed' => 'in_list[0,1]',
@@ -48,7 +44,6 @@ class TaskController extends Controller
             return redirect()->to('/tasks/create')->withInput();
         }
 
-        // Inserta la nueva tarea
         $taskModel->save([
             'title'      => $this->request->getPost('title'),
             'completed'  => $this->request->getPost('completed'),
@@ -58,7 +53,6 @@ class TaskController extends Controller
         return redirect()->to('/tasks')->with('success', 'Tarea agregada correctamente.');
     }
 
-    // Muestra el formulario para editar una tarea
     public function edit($id)
     {
         $taskModel    = new TaskModel();
@@ -67,12 +61,10 @@ class TaskController extends Controller
         return view('tasks/edit', $data);
     }
 
-    // Actualiza una tarea
     public function update($id)
     {
         $taskModel = new TaskModel();
 
-        // Validación
         if (! $this->validate([
             'title'     => 'required|min_length[3]|max_length[255]',
             'completed' => 'in_list[0,1]',
@@ -80,7 +72,6 @@ class TaskController extends Controller
             return redirect()->to('/tasks/edit/' . $id)->withInput();
         }
 
-        // Actualiza la tarea
         $taskModel->update($id, [
             'title'     => $this->request->getPost('title'),
             'completed' => $this->request->getPost('completed'),

@@ -118,7 +118,6 @@
             const taskId = form.getAttribute('data-task-id');
             const formData = new FormData(form);
 
-            // Asegurar que el campo 'completed' siempre se envíe como 1 o 0
             if (!formData.has('completed')) {
                 formData.append('completed', 0);
             }

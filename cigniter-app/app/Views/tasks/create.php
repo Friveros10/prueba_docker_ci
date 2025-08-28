@@ -111,11 +111,10 @@
         const messages = document.getElementById('form-messages');
 
         form.addEventListener('submit', function (e) {
-            e.preventDefault(); // evita recarga
+            e.preventDefault();
 
             const formData = new FormData(form);
 
-            // Validar que el campo completed siempre esté presente, 1 o 0
             if (!formData.has('completed')) {
                 formData.append('completed', 0);
             }
@@ -139,15 +138,11 @@
                 return isJSON ? response.json() : {};
             })
             .then(data => {
-                // Éxito
                 messages.innerHTML = `<div class="message success">Tarea guardada exitosamente.</div>`;
                 form.reset();
 
-                // Opcional: redirigir luego de crear
-                // setTimeout(() => window.location.href = '/tasks', 1500);
             })
             .catch(error => {
-                // Errores de validación
                 if (typeof error === 'object' && error.errors) {
                     let errorsHtml = '<div class="message error"><ul>';
                     Object.values(error.errors).forEach(err => {
@@ -156,7 +151,6 @@
                     errorsHtml += '</ul></div>';
                     messages.innerHTML = errorsHtml;
                 } else {
-                    // Error general
                     messages.innerHTML = `<div class="message error">Ocurrió un error al guardar la tarea.</div>`;
                     console.error(error);
                 }

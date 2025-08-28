@@ -74,7 +74,7 @@
                 .then(response => response.json())
                 .then(tasks => {
                     const tbody = document.getElementById('tasks-body');
-                    tbody.innerHTML = ''; // limpiar contenido
+                    tbody.innerHTML = '';
 
                     tasks.forEach(task => {
                         const tr = document.createElement('tr');
@@ -114,8 +114,8 @@
             </tr>
         </thead>
         <tbody id="tasks-body">
-            <!-- Las filas se llenarán vía JavaScript -->
-        </tbody>
+
+    </tbody>
     </table>
 </body>
 </html>
